@@ -37,7 +37,7 @@ class RsyncDeployer implements DeployerInterface
                 $colored[] = '<info>sending incremental file list</info>';
             }
             // For Linux
-            elseif( $line == 'sent ' )
+            elseif( starts_with( 'sent ' ) )
             {
                 $parts = explode( ' ', $line );
                 $colored[] = '<comment>'.trim( $parts[2] ).
@@ -46,7 +46,7 @@ class RsyncDeployer implements DeployerInterface
                     '</comment><info> bytes recieved.</info>';
             }
             // For Linux
-            elseif( $line == 'total size is ' )
+            elseif( starts_with( 'total size is ' ) )
             {
                 $parts = explode( ' ', $line );
                 $colored[] = ('<comment>'.trim( $parts[4] ).'</comment><info> bytes transferred totally.</info>');
