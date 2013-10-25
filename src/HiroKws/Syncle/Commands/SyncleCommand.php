@@ -130,7 +130,7 @@ class SyncleCommand extends BaseCommand
                 null // When VALUE_NONE, keep this null.
             ),
             array( 'lang',
-                'l',
+                '',
                 InputOption::VALUE_OPTIONAL,
                 'language code ( en, ja, ...etc. )',
                 'en' // English is fallback language.
