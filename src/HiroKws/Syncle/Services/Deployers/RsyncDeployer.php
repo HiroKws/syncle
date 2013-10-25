@@ -17,17 +17,39 @@ class RsyncDeployer implements DeployerInterface
         {
             if( $log ) \Log::info( $line );
 
+            // Maybe for Mac
             if( starts_with( $line, "Number of files transferred" ) )
             {
                 $parts = explode( ":", $line );
-                $colored[] = ( "<comment>".trim( $parts[1] ).
-                    "</comment><info> ファイルを転送しました。</info>" );
+                $colored[] = "<comment>".trim( $parts[1] ).
+                    "</comment><info> ファイルを転送しました。</info>";
             }
+            // Maybe for Mac
             elseif( starts_with( $line, "Total transferred file size" ) )
             {
                 $parts = explode( ":", $line );
-                $colored[] = ( "<comment>".trim( $parts[1] ).
-                    "</comment><info> 転送終了。</info>" );
+                $colored[] = "<comment>".trim( $parts[1] ).
+                    "</comment><info> 転送終了。</info>";
+            }
+            // For Linux
+            elseif( $line == 'sending incremental file list' )
+            {
+                $colored[] = '<info>sending incremental file list</info>';
+            }
+            // For Linux
+            elseif( $line == 'sent ' )
+            {
+                $parts = explode( ' ', $line );
+                $colored[] = '<comment>'.trim( $parts[2] ).
+                    '</comment><info> bytes sent.</info>';
+                $colored[] = '<comment>'.trim( $parts[6] ).
+                    '</comment><info> bytes recieved.</info>';
+            }
+            // For Linux
+            elseif( $line == 'total size is ' )
+            {
+                $parts = explode( ' ', $line );
+                $colored[] = ('<comment>'.trim( $parts[4] ).'</comment><info> bytes transferred totally.</info>');
             }
             elseif( $verbose )
             {
