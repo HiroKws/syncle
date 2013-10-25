@@ -33,7 +33,7 @@ class SyncleCommand extends BaseCommand
         // instantiate by cascading from service providor. I don't want it.
         // ( In this case, just one command. But when a package have a lot of commnads,
         // it make waste resouce. )
-        // So just before I make each instance just before use it in package commands.
+        // So I make each instance just before when use it in package commands.
 
         $validator = \App::make( 'Syncle\Services\Validators\SyncleCommandValidator' );
 
@@ -46,6 +46,7 @@ class SyncleCommand extends BaseCommand
             $this->error( $message );
 
             // non zero value is abnormal teminated code for Symfony console.
+            // (Or for most of shell/OS, only zero is normal terminate code.)
             return 1;
         }
 
@@ -53,11 +54,15 @@ class SyncleCommand extends BaseCommand
         $verbose = $args['verbose'];
         $log = $args['log'];
 
+        // Set locale for display messages' language.
+        \App::setLocale($args['lang']);
+
         // Get project root. 'base_path' don't work in a command.
         // 7th higher directory is project root on 'vendor' also 'workbench' directory.
         $basePath = realpath( __DIR__.'/../../../../../../..' ).'/';
 
         // Get execute command line.
+        // escapeshellcmd for string from config item..., sorry I can't believe you. :D
         $commandLine = escapeshellcmd(
             str_replace( ':to', $basePath,
                          \Config::get( 'syncle::DeployMethod.'.$args['by'] )
@@ -89,6 +94,7 @@ class SyncleCommand extends BaseCommand
             $this->line( $line );
         }
 
+        // Normal terminate.
         return 0;
     }
 
@@ -115,13 +121,19 @@ class SyncleCommand extends BaseCommand
                 'b',
                 InputOption::VALUE_OPTIONAL,
                 'Deploy method.',
-                'default'
+                'default' // default deploy method.
             ),
             array( 'log',
                 'l',
                 InputOption::VALUE_NONE, // VALUE_NONE means true/false flag.
                 'Log output',
                 null // When VALUE_NONE, keep this null.
+            ),
+            array( 'lang',
+                'l',
+                InputOption::VALUE_OPTIONAL,
+                'language code ( en, ja, ...etc. )',
+                'en' // English is fallback language.
             ),
         );
     }

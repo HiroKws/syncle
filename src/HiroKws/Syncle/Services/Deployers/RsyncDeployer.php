@@ -22,8 +22,8 @@ class RsyncDeployer implements DeployerInterface
             if( starts_with( $line, "Number of files transferred" ) )
             {
                 $parts = explode( ":", $line );
-                $colored[] = "<comment>".trim( $parts[1] ).
-                    "</comment><info> ファイルを転送しました。</info>";
+                $colored[] = \Lang::trans( 'MaxFileTransferred',
+                                           array( 'file' => trim( $parts[1] ) ) );
             }
             // Maybe for Mac
             elseif( starts_with( $line, "Total transferred file size" ) )
@@ -33,7 +33,7 @@ class RsyncDeployer implements DeployerInterface
                     "</comment><info> 転送終了。</info>";
             }
             // For Linux
-            elseif( $line == 'sending incremental file list' )
+            elseif( $verbose && $line == 'sending incremental file list' )
             {
                 $colored[] = '<info>sending incremental file list</info>';
             }
@@ -52,8 +52,9 @@ class RsyncDeployer implements DeployerInterface
                 $parts = explode( ' ', str_replace( '  ', ' ', $line ) );
                 $colored[] = ('<comment>'.trim( $parts[3] ).
                     '</comment><info> bytes transferred totally.</info>');
-                $colored[] = ('<comment>'.$fileCnt.
-                    '</comment><info> files transferred (estimated).</info>');
+
+                $colored[] = \Lang::trans( 'LinuxFileTransferred',
+                                           array( 'file' => $fileCnt ) );
             }
             elseif( $verbose )
             {
