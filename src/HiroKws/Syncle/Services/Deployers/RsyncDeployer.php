@@ -39,17 +39,17 @@ class RsyncDeployer implements DeployerInterface
             // For Linux
             elseif( starts_with( $line, 'sent ') )
             {
-                $parts = explode( ' ', str_replace( '  ', ' ', $line) ); var_dump($parts);
-                $colored[] = '<comment>'.trim( $parts[2] ).
+                $parts = explode( ' ', str_replace( '  ', ' ', $line) );
+                $colored[] = '<comment>'.trim( $parts[1] ).
                     '</comment><info> bytes sent.</info>';
-                $colored[] = '<comment>'.trim( $parts[5] ).
+                $colored[] = '<comment>'.trim( $parts[4] ).
                     '</comment><info> bytes recieved.</info>';
             }
             // For Linux
             elseif( starts_with( $line, 'total size is ' ) )
             {
                 $parts = explode( ' ', str_replace( '  ', ' ', $line) );
-                $colored[] = ('<comment>'.trim( $parts[4] ).'</comment><info> bytes transferred totally.</info>');
+                $colored[] = ('<comment>'.trim( $parts[3] ).'</comment><info> bytes transferred totally.</info>');
             }
             elseif( $verbose )
             {
