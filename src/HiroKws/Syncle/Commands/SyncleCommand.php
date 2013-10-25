@@ -53,10 +53,14 @@ class SyncleCommand extends BaseCommand
         $verbose = $args['verbose'];
         $log = $args['log'];
 
+        // Get project root. 'base_path' don't work in a command.
+        // 7th higher directory is project root on 'vendor' also 'workbench' directory.
+        $basePath = realpath( __DIR__.'/../../../../../../..' ).'/';
+
         // Get execute command line.
         $commandLine = escapeshellcmd(
-            str_replace( ':to', trim( '/', base_path() ).'/',
-                                      \Config::get( 'syncle::DeployMethod.'.$args['by'] )
+            str_replace( ':to', $basePath,
+                         \Config::get( 'syncle::DeployMethod.'.$args['by'] )
             )
         );
 
