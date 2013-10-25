@@ -12,6 +12,7 @@ class RsyncDeployer implements DeployerInterface
         exec( $commandLine, $outputs );
 
         $colored = array( );
+        $fileCnt = 0;
 
         foreach( $outputs as $line )
         {
@@ -37,9 +38,9 @@ class RsyncDeployer implements DeployerInterface
                 $colored[] = '<info>sending incremental file list</info>';
             }
             // For Linux
-            elseif( starts_with( $line, 'sent ') )
+            elseif( starts_with( $line, 'sent ' ) )
             {
-                $parts = explode( ' ', str_replace( '  ', ' ', $line) );
+                $parts = explode( ' ', str_replace( '  ', ' ', $line ) );
                 $colored[] = '<comment>'.trim( $parts[1] ).
                     '</comment><info> bytes sent.</info>';
                 $colored[] = '<comment>'.trim( $parts[4] ).
@@ -48,11 +49,15 @@ class RsyncDeployer implements DeployerInterface
             // For Linux
             elseif( starts_with( $line, 'total size is ' ) )
             {
-                $parts = explode( ' ', str_replace( '  ', ' ', $line) );
-                $colored[] = ('<comment>'.trim( $parts[3] ).'</comment><info> bytes transferred totally.</info>');
+                $parts = explode( ' ', str_replace( '  ', ' ', $line ) );
+                $colored[] = ('<comment>'.trim( $parts[3] ).
+                    '</comment><info> bytes transferred totally.</info>');
+                $colored[] = ('<comment>'.$fileCnt.
+                    '</comment><info> files transferred (estimated).</info>');
             }
             elseif( $verbose )
             {
+                $fileCnt++;
                 $colored[] = $line;
             }
         }
