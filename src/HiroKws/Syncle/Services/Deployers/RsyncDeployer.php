@@ -22,7 +22,7 @@ class RsyncDeployer implements DeployerInterface
             if( starts_with( $line, "Number of files transferred" ) )
             {
                 $parts = explode( ":", $line );
-                $colored[] = \Lang::trans( 'MaxFileTransferred',
+                $colored[] = \Lang::trans( 'syncle::MaxFileTransferred',
                                            array( 'file' => trim( $parts[1] ) ) );
             }
             // Maybe for Mac
@@ -53,7 +53,7 @@ class RsyncDeployer implements DeployerInterface
                 $colored[] = ('<comment>'.trim( $parts[3] ).
                     '</comment><info> bytes transferred totally.</info>');
 
-                $colored[] = \Lang::trans( 'LinuxFileTransferred',
+                $colored[] = \Lang::trans( 'syncle::LinuxFileTransferred',
                                            array( 'file' => $fileCnt ) );
             }
             elseif( $verbose )
