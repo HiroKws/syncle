@@ -29,29 +29,32 @@ class RsyncDeployer implements DeployerInterface
             elseif( starts_with( $line, "Total transferred file size" ) )
             {
                 $parts = explode( ":", $line );
-                $colored[] = "<comment>".trim( $parts[1] ).
-                    "</comment><info> 転送終了。</info>";
+                $colored[] = \Lang::trans( 'syncle::SyncleCommand.LinuxFileTransferred',
+                                           array( 'file' => trim( $parts[1] ) ) );
             }
             // For Linux
             elseif( $verbose && $line == 'sending incremental file list' )
             {
-                $colored[] = '<info>sending incremental file list</info>';
+                $colored[] = \Lang::trans( 'syncle::SyncleCommand.LinuxSentList' );
             }
             // For Linux
             elseif( starts_with( $line, 'sent ' ) )
             {
                 $parts = explode( ' ', str_replace( '  ', ' ', $line ) );
-                $colored[] = '<comment>'.trim( $parts[1] ).
-                    '</comment><info> bytes sent.</info>';
-                $colored[] = '<comment>'.trim( $parts[4] ).
-                    '</comment><info> bytes recieved.</info>';
+
+                $colored[] = \Lang::trans( 'syncle::SyncleCommand.LinuxSentByte',
+                                           array( 'byte' => trim( $parts[1] ) ) );
+
+                $colored[] = \Lang::trans( 'syncle::SyncleCommand.LinuxRecievedByte',
+                                           array( 'byte' => trim( $parts[4] ) ) );
             }
             // For Linux
             elseif( starts_with( $line, 'total size is ' ) )
             {
                 $parts = explode( ' ', str_replace( '  ', ' ', $line ) );
-                $colored[] = ('<comment>'.trim( $parts[3] ).
-                    '</comment><info> bytes transferred totally.</info>');
+
+                $colored[] = \Lang::trans( 'syncle::SyncleCommand.LinuxTotalTransferred',
+                                           array( 'byte' => trim( $parts[3] ) ) );
 
                 $colored[] = \Lang::trans( 'syncle::SyncleCommand.LinuxFileTransferred',
                                            array( 'file' => $fileCnt ) );
