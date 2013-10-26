@@ -16,6 +16,7 @@ class RsyncDeployer implements DeployerInterface
 
         foreach( $outputs as $line )
         {
+            // Put in log.
             if( $log ) \Log::info( $line );
 
             // Maybe for Mac

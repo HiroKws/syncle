@@ -57,17 +57,16 @@ class SyncleCommand extends BaseCommand
         // Set locale for display messages' language.
         \App::setLocale($args['lang']);
 
-        // Get project root. 'base_path' don't work in a command.
+       // Get project root. 'base_path' don't work in a command.
         // 7th higher directory is project root on 'vendor' also 'workbench' directory.
         $basePath = realpath( __DIR__.'/../../../../../../..' ).'/';
 
         // Get execute command line.
         // escapeshellcmd for string from config item..., sorry I can't believe you. :D
-        $commandLine = escapeshellcmd(
-            str_replace( ':to', $basePath,
-                         \Config::get( 'syncle::DeployMethod.'.$args['by'] )
-            )
-        );
+        $commandItem = \Config::get( 'syncle::DeployMethod.'.$args['by'] );
+        $replacedTo = str_replace( ':to', $basePath, $commandItem );
+        $replacedMessage = str_replace(':message', $args['message'], $replacedTo);
+        $commandLine = escapeshellcmd($replacedMessage);
 
         // Get command.
         $command = head( explode( ' ', $commandLine ) );
@@ -124,16 +123,22 @@ class SyncleCommand extends BaseCommand
                 'default' // default deploy method.
             ),
             array( 'log',
-                'l',
+                '',
                 InputOption::VALUE_NONE, // VALUE_NONE means true/false flag.
                 'Log output',
                 null // When VALUE_NONE, keep this null.
             ),
             array( 'lang',
-                '',
+                'l',
                 InputOption::VALUE_OPTIONAL,
                 'language code ( en, ja, ...etc. )',
                 'en' // English is fallback language.
+            ),
+            array( 'message',
+                'm',
+                InputOption::VALUE_OPTIONAL,
+                'Commit message',
+                'Auto commited by deployment command.'
             ),
         );
     }
