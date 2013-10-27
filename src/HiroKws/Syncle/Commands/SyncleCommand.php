@@ -27,10 +27,10 @@ class SyncleCommand extends BaseCommand
      */
     public function fire()
     {
+        $args = array_merge( $this->option(), $this->argument() );
+
         // Set locale for display messages' language. Default is 'en'.
         \App::setLocale( $args['lang'] );
-
-        $args = array_merge( $this->option(), $this->argument() );
 
         // I don't wont to make extra instance by cascading dependency injextion
         // on constructor for commands.
@@ -50,7 +50,7 @@ class SyncleCommand extends BaseCommand
         // Deploy this project.
         $deployer = \App::make( 'Syncle\Services\Deployers\Deploy' );
         $outputs = $deployer
-            ->deploy( $commandItems, $args['verbose'], $args['log'], $arg['message'] );
+            ->deploy( $commandItems, $args['verbose'], $args['log'], $args['message'] );
 
         // Display output.
         foreach( $outputs as $line ) $this->line( $line );
