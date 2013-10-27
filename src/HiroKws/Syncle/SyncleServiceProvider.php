@@ -23,9 +23,9 @@ class SyncleServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app['syncle.synclecommand'] = $this->app->share( function($app)
-            {
-                return new SyncleCommand;
-            }
+        {
+            return new SyncleCommand;
+        }
         );
     }
 

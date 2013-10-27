@@ -12,6 +12,7 @@ return array(
         '--exclude="test/" --exclude="tests/" --exclude="Tests/" --exclude="test-suite" '.
         '-e "ssh -p 99999" :to username@somewhereexample.com:/home/username/public_html/project',
         // Set Git commands. ':message' replace to string specified by --message option.
-        'git' => 'git add --all; git commit -am ":message"',
+        // When set multiple command, use array.
+        'git' => array('git add -A', 'git commit -am ":message"'),
     ),
 );

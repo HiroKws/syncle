@@ -1,0 +1,50 @@
+<?php
+
+namespace Syncle\Services\Deployers;
+
+class Deployer
+{
+    private $output = '';
+
+    public function run( $commands, $verbose, $log, $message )
+    {
+        // Get project root. 'base_path' don't work in a command.
+        // 8th upper directory is project root.
+        $basePath = realpath( __DIR__.'/../../../../../../../..' ).'/';
+
+        $commandArray = is_array( $commands ) ? $commands : ( array ) $commands;
+
+        foreach( $commandArray as $command )
+        {
+            $replacedTo = str_replace( ':to', $basePath, $command );
+            $replacedMessage = str_replace( ':message', $message, $replacedTo );
+            $commandLine = escapeshellcmd( $replacedMessage );
+
+            // Get only execute command.
+            $command = head( explode( ' ', $commandLine ) );
+
+            // Get Deployer instance.
+            try
+            {
+                // First, try to command name + Deployer class to instantiate.
+                $deployer = \App::singleton( 'Syncle\Services\Deployers\\'.
+                        studly_case( $command ).'Deployer' );
+            }
+            catch( \Exception $e )
+            {
+                // Get fallback default Deployer instance.
+                $deployer = \App::singleton( 'Syncle\Services\Deployers\DefaultDeployer' );
+            }
+
+            // Deploy this project and edit output.
+            $result = $deployer->deploy( $commandLine, $verbose, $log );
+
+            $this->output = array_merge( $this->outpout, $deployer->getOutput() );
+
+            if( $result != 0 ) return $result;
+        }
+
+        return 0;
+    }
+
+}

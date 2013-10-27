@@ -37,7 +37,7 @@ class BaseCommand extends Command
             elseif( preg_match( '/The "(.+)" option does not exist./', $e->getMessage(),
                                 $matches ) )
             {
-                $this->error( \Lang::get( 'StriveJobs::BaseCommand.OptionNotExist',
+                $this->error( \Lang::get( 'syncle::BaseCommand.OptionNotExist',
                                           array( 'option' => $matches[1] ) ) );
             }
             else
@@ -49,7 +49,6 @@ class BaseCommand extends Command
 
         return $result;
     }
-
     /**
      * Set commnad name.
      *

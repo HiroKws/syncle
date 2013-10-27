@@ -27,74 +27,35 @@ class SyncleCommand extends BaseCommand
      */
     public function fire()
     {
-        // Validation :
-        // The reason I make this instance here, if I put this on constructor,
-        // and when a command instantiated, all other classes in package will also
-        // instantiate by cascading from service providor. I don't want it.
-        // ( In this case, just one command. But when a package have a lot of commnads,
-        // it make waste resouce. )
-        // So I make each instance just before when use it in package commands.
-
-        $validator = \App::make( 'Syncle\Services\Validators\SyncleCommandValidator' );
+        // Set locale for display messages' language. Default is 'en'.
+        \App::setLocale( $args['lang'] );
 
         $args = array_merge( $this->option(), $this->argument() );
 
+        // I don't wont to make extra instance by cascading dependency injextion
+        // on constructor for commands.
+        $validator = \App::make( 'Syncle\Services\Validators\SyncleCommandValidator' );
         $message = $validator->validate( $args );
 
         if( $message != '' )
         {
             $this->error( $message );
 
-            // non zero value is abnormal teminated code for Symfony console.
-            // (Or for most of shell/OS, only zero is normal terminate code.)
-            return 1;
+            return 1; // Presented abnormal termination.
         }
 
-        // Get execution modes. Automaticall set ture or false on both items.
-        $verbose = $args['verbose'];
-        $log = $args['log'];
+        // Get an execute command line or command array.
+        $commandItems = \Config::get( 'syncle::DeployMethod.'.$args['by'] );
 
-        // Set locale for display messages' language.
-        \App::setLocale($args['lang']);
-
-       // Get project root. 'base_path' don't work in a command.
-        // 7th higher directory is project root on 'vendor' also 'workbench' directory.
-        $basePath = realpath( __DIR__.'/../../../../../../..' ).'/';
-
-        // Get execute command line.
-        // escapeshellcmd for string from config item..., sorry I can't believe you. :D
-        $commandItem = \Config::get( 'syncle::DeployMethod.'.$args['by'] );
-        $replacedTo = str_replace( ':to', $basePath, $commandItem );
-        $replacedMessage = str_replace(':message', $args['message'], $replacedTo);
-        $commandLine = escapeshellcmd($replacedMessage);
-
-        // Get command.
-        $command = head( explode( ' ', $commandLine ) );
-
-        // Get Deployer instance.
-        try
-        {
-            // First, try to command name + Deployer class to instantiate.
-            $deployer = \App::make( 'Syncle\Services\Deployers\\'.
-                    studly_case( $command ).'Deployer' );
-        }
-        catch( \Exception $e )
-        {
-            // Get fallback default Deployer instance.
-            $deployer = \App::make( 'Syncle\Services\Deployers\DefaultDeployer' );
-        }
-
-        // Deploy this project and edit output.
-        $outputs = $deployer->deploy( $commandLine, $verbose, $log );
+        // Deploy this project.
+        $deployer = \App::make( 'Syncle\Services\Deployers\Deploy' );
+        $outputs = $deployer->deploy( $commandItems, $args['verbose'], $args['log'],
+                                      $arg['message'] );
 
         // Display output.
-        foreach( $outputs as $line )
-        {
-            $this->line( $line );
-        }
+        foreach( $outputs as $line ) $this->line( $line );
 
-        // Normal terminate.
-        return 0;
+        return 0; // Presented normal termination.
     }
 
     /**

@@ -4,24 +4,32 @@ namespace Syncle\Services\Deployers;
 
 class DefaultDeployer implements DeployerInterface
 {
+    private $output;
 
-    public function deploy( $commndLine, $verbose = false, $log = false )
+    public function run( $commnd, $verbose, $log )
     {
-        $output = '';
+        $outputs = '';
+        $result = 0;
 
-        exec( $commndLine, $output );
+        exec( $commnd, $outputs, $result );
+
+        $this->output = $outputs;
+
+        if ( $result != 0 ) return  $result;
 
         if( $log )
         {
-            foreach( $output as $line )
+            foreach( $outputs as $line )
             {
-                \Log::info($line);
+                \Log::info( $line );
             }
         }
+        return 0;
+    }
 
-        // This is default fallback deployer.
-        // So ignore $verbose. Everytime output all.
-        return $output;
+    public function getOutput()
+    {
+        return $this->output;
     }
 
 }

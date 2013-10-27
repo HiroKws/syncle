@@ -4,23 +4,39 @@ namespace Syncle\Services\Deployers;
 
 class GitDeployer implements DeployerInterface
 {
+    private $output;
 
-    public function deploy( $commndLine, $verbose = false, $log = false )
+    public function run( $commndLine, $verbose, $log )
     {
         $output = '';
+        $result = 0;
 
-        exec( $commndLine, $output );
+        exec( $commndLine, $output, $result );
+
+        if ( $result != 0 )
+        {
+            $this->output = $output;
+
+            return $result;
+        }
 
         // Now do specially nothing.
         if( $log )
         {
             foreach( $output as $line )
             {
-                \Log::info($line);
+                \Log::info( $line );
             }
         }
 
-       return $output;
+        $this->output = $output;
+
+        return 0;
+    }
+
+    public function getOutput()
+    {
+        return $this->output;
     }
 
 }

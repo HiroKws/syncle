@@ -95,7 +95,6 @@ If you want to log output, so use log option.
 
 ~~~~
 php artisan syncle --log
-
 ~~~~
 
 ### Why
