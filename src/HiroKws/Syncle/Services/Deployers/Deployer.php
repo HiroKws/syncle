@@ -23,16 +23,17 @@ class Deployer
             // Get only execute command.
             $command = head( explode( ' ', $commandLine ) );
 
-            // Get Deployer instance.
+            // Get each command's deployer instance.
+            // Class name started with command name.
             try
             {
-                // First, try to command name + Deployer class to instantiate.
+                // First, try to instantiate command name + "Deployer" class.
                 $deployer = \App::singleton( 'Syncle\Services\Deployers\\'.
                         studly_case( $command ).'Deployer' );
             }
             catch( \Exception $e )
             {
-                // Get fallback default Deployer instance.
+                // Get fallback default deployer instance.
                 $deployer = \App::singleton( 'Syncle\Services\Deployers\DefaultDeployer' );
             }
 

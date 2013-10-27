@@ -49,8 +49,8 @@ class SyncleCommand extends BaseCommand
 
         // Deploy this project.
         $deployer = \App::make( 'Syncle\Services\Deployers\Deploy' );
-        $outputs = $deployer->deploy( $commandItems, $args['verbose'], $args['log'],
-                                      $arg['message'] );
+        $outputs = $deployer
+            ->deploy( $commandItems, $args['verbose'], $args['log'], $arg['message'] );
 
         // Display output.
         foreach( $outputs as $line ) $this->line( $line );
