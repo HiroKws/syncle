@@ -2,6 +2,8 @@
 
 return array(
     'CommandName'  => 'syncle',
+    // Display language. Only 'en' and 'ja'.
+    'MessageLang'  => 'en',
     'DeployMethod' => array(
         // Set your rsync command options. ':to' replace to document root directory.
         'default' => 'rsync -av --delete '.
@@ -13,6 +15,7 @@ return array(
         '-e "ssh -p 99999" :to username@somewhereexample.com:/home/username/public_html/project',
         // Set Git commands. ':message' replace to string specified by --message option.
         // When set multiple command, use array.
-        'git' => array('git add -A', 'git commit -am ":message"'),
+        'git' => array('git add -A', 'git commit -am ":message"', 'git push'),
     ),
+    'DefaultGitMessage' => 'Automatically commited by deploy command.',
 );

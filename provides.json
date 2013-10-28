@@ -1,0 +1,7 @@
+{
+    "providers": [
+        "Syncle\SyncleServiceProvider"
+    ],
+    "PostInstallMessage": "Updated app.php config file for hirokws/syncle.",
+    "PostUninstallMessage": "Automatically remove hirokws/syncle registrations from app.php config file."
+}

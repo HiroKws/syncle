@@ -2,26 +2,19 @@
 
 namespace Syncle\Services\Deployers;
 
-class RsyncDeployer implements DeployerInterface
+class RsyncDeployer extends BaseDeployer implements DeployerInterface
 {
-    private $output;
+    protected $output;
 
     public function run( $commandLine, $verbose, $log )
     {
-        $outputs = '';
-        $result = 0;
+        $result = $this->executor->execute( $commandLine );
 
-        exec( $commandLine, $outputs, $result );
-
-        if( $result != 0 )
-        {
-            $this->output = $outputs;
-
-            return $result;
-        }
+        $outputs = $this->executor->getOutput();
+        $errorOutputs = $this->executor->getErrorOutput();
 
         $this->output = array( );
-        $fileCnt = 0;
+        $fileCnt = -1; // One empty line will be displayed in Linux rsync command.
 
         foreach( $outputs as $line )
         {
@@ -78,12 +71,10 @@ class RsyncDeployer implements DeployerInterface
                 if( $verbose ) $this->output[] = $line;
             }
         }
-        return 0;
-    }
 
-    public function getOutput()
-    {
-        return $this->output;
+        $this->outputErrors( $errorOutputs, $log );
+
+        return $result;
     }
 
 }

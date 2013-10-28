@@ -10,4 +10,5 @@ return array(
     'LinuxRecievedByte'    => "<comment>:byte</comment><info> bytes recieved.</info>",
     'LinuxTotalTransferred' => "<comment>:byte</comment><info> bytes transferred totally.</info>",
     'LinuxFileTransferred' => "<comment>:file</comment><info> files transferred. (Estimated from output lines)</info>",
+    'ExecutionError' => "<error> Execution Error </error> ==> <info>:command</info>",
 );

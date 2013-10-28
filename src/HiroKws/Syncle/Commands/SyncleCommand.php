@@ -29,9 +29,6 @@ class SyncleCommand extends BaseCommand
     {
         $args = array_merge( $this->option(), $this->argument() );
 
-        // Set locale for display messages' language. Default is 'en'.
-        \App::setLocale( $args['lang'] );
-
         // I don't wont to make extra instance by cascading dependency injextion
         // on constructor for commands.
         $validator = \App::make( 'Syncle\Services\Validators\SyncleCommandValidator' );
@@ -47,15 +44,18 @@ class SyncleCommand extends BaseCommand
         // Get an execute command line or command array.
         $commandItems = \Config::get( 'syncle::DeployMethod.'.$args['by'] );
 
+        // Get default git commit message.
+        $commitMessage = $args['message'] == '' ? \Config::get( 'syncle::DefaultGitMessage' ) : $args['message'];
+
         // Deploy this project.
-        $deployer = \App::make( 'Syncle\Services\Deployers\Deploy' );
-        $outputs = $deployer
-            ->deploy( $commandItems, $args['verbose'], $args['log'], $args['message'] );
+        $deployer = \App::make( 'Syncle\Services\Deployers\Deployer' );
+        $result = $deployer
+            ->deploy( $commandItems, $args['verbose'], $args['log'], $commitMessage );
 
         // Display output.
-        foreach( $outputs as $line ) $this->line( $line );
+        foreach( $deployer->getOutput() as $line ) $this->line( $line );
 
-        return 0; // Presented normal termination.
+        return $result;
     }
 
     /**
@@ -84,22 +84,16 @@ class SyncleCommand extends BaseCommand
                 'default' // default deploy method.
             ),
             array( 'log',
-                '',
+                'l',
                 InputOption::VALUE_NONE, // VALUE_NONE means true/false flag.
                 'Log output',
                 null // When VALUE_NONE, keep this null.
-            ),
-            array( 'lang',
-                'l',
-                InputOption::VALUE_OPTIONAL,
-                'language code ( en, ja, ...etc. )',
-                'en' // English is fallback language.
             ),
             array( 'message',
                 'm',
                 InputOption::VALUE_OPTIONAL,
                 'Commit message',
-                'Auto commited by deployment command.'
+                ''
             ),
         );
     }

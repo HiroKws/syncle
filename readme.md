@@ -3,7 +3,7 @@ Syncle
 
 Laravel 4 Arisan deploy command by using execute a command line.
 
-This is still alpha version, not tested well yet.
+This is beta version, not tested well yet.
 
 ~~~~
 php artisan syncle
@@ -12,6 +12,8 @@ php artisan syncle
 Then deploy project by a command on config setting .
 
 Also you can change command name by set favoret name on config file.
+
+( But... in honesty, the best way is that just put same named shell script on each project root. More simple and easy to maintain... :D Main purpose is to lean how to make command and shell script handling, error output and so on. If you use this Artisan command, you can see colorized message on some output. This is a benefit. :D )
 
 #### Install
 
@@ -45,8 +47,10 @@ Please open app/config/packages/hirokws/syncle/config.php.
 And change setting as you like.
 
 * CommandName : Command name to deploy. Default "syncle".
+* MessageLang : Display language. Only 'en' and 'ja' are available.
 * DeployMethod.default : rsync command to deploy. This default command will be used when no --by option to specify deploy method. In the command, ':to' will be replaced to project root path with ends '/'. Anyway, you must set rsync command propery.
-* DeployMethos.git : An example of git command. I have not tested this. :) To use this command setting, run command with '--by git'. You can put any item names to deploy methods. Just it will be used to identify. ':message' will be replaced to message specified by '--message' option.
+* DeployMethos.git : An example of git commands. To use this command setting, run command with '--by git'. You can put any item names to deploy methods. Just it will be used to identify. ':message' will be replaced to message specified by '--message' option.
+* DefaultGitMessage : Dafault string that will be replaced to ':message'.
 
 #### Run
 
@@ -65,14 +69,7 @@ php artisan syncle -b git -m "Initial Commit"
 
 Of course, if you project will deployed by git mainly, so set it as 'default'. Then command become shorter.
 
-**Show Japanese message :**
-
-~~~~
-php artisan syncle --lang ja
-php artisan syncle -l ja
-~~~~
-
-Sorry, I made only en and ja language files. ;)
+If Ommited --message, DefaultGitMessage item on config file will be used. (If there is ':message' in DeployMethos.git command(s).
 
 **Show transferred files list :**
 
@@ -105,7 +102,7 @@ Mainly, I used rsync. When I push something to Github, so used git. For some sha
 
 Normally I made upload bash alias for each project. But already too many to remember them. Oh I'm getting old...
 
-This 10 days, I read/translated [Laravel 4 Cookbook](https://leanpub.com/laravel4cookbook). And I got an idea to make a deploy command as Artisan CLI. If so, I just kick deploy command on an top of root folder. It's nice !
+This 10 days, I read/translated [Laravel 4 Cookbook](https://leanpub.com/laravel4cookbook). And I got an idea to make a deploy command as Artisan CLI. If so, I just kick deploy command on an top of root folder. It's nice ! ( But...as I mentioned, the best way is just making simple same upload script on each project top folder..., I think. ;) )
 
 And Yesterday, I had translated, and released Japanese version. Then started to development for myself.
 

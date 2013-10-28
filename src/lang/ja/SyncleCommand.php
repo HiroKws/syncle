@@ -10,4 +10,5 @@ return array(
     'LinuxRecievedByte'     => "<comment>:byte</comment><info>バイト受信しました。</info>",
     'LinuxTotalTransferred' => "<comment>:byte</comment><info>バイト転送しました。（総合計）</info>",
     'LinuxFileTransferred'  => "<comment>:file</comment><info>ファイル転送しました。（出力行数よりの推定値）</info>",
+    'ExecutionError'        => "<error> 実行時エラー </error> ==> <info>:command</info>",
 );

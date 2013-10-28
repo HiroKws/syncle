@@ -18,6 +18,8 @@ class BaseCommand extends Command
      */
     public function run( InputInterface $input, OutputInterface $output )
     {
+        \App::setLocale( \Config::get( 'syncle::MessageLang' ) );
+
         try
         {
             $result = parent::run( $input, $output );
@@ -49,14 +51,5 @@ class BaseCommand extends Command
 
         return $result;
     }
-    /**
-     * Set commnad name.
-     *
-     * @param string $name Command main name.
-     */
-//    public function setCommandName( $name )
-//    {
-//        $this->setName( $name );
-//    }
 
 }

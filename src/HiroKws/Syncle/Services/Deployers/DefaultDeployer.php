@@ -2,34 +2,29 @@
 
 namespace Syncle\Services\Deployers;
 
-class DefaultDeployer implements DeployerInterface
+class DefaultDeployer extends BaseDeployer implements DeployerInterface
 {
-    private $output;
+    protected $output;
 
-    public function run( $commnd, $verbose, $log )
+    public function run( $commandLine, $verbose, $log )
     {
-        $outputs = '';
-        $result = 0;
+        $result = $this->executor->execute( $commandLine );
 
-        exec( $commnd, $outputs, $result );
+        $outputs = $this->executor->getOutput();
+        $errorOutputs = $this->executor->getErrorOutput();
 
-        $this->output = $outputs;
+        $this->output = array( );
 
-        if ( $result != 0 ) return  $result;
-
-        if( $log )
+        foreach( $outputs as $output )
         {
-            foreach( $outputs as $line )
-            {
-                \Log::info( $line );
-            }
-        }
-        return 0;
-    }
+            if( $log ) \Log::info( $output );
 
-    public function getOutput()
-    {
-        return $this->output;
+            $this->output[] = $output;
+        }
+
+        $this->outputErrors( $errorOutputs, $log );
+
+        return $result;
     }
 
 }

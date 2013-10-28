@@ -2,41 +2,30 @@
 
 namespace Syncle\Services\Deployers;
 
-class GitDeployer implements DeployerInterface
+class GitDeployer extends BaseDeployer implements DeployerInterface
 {
-    private $output;
+    protected $output;
 
-    public function run( $commndLine, $verbose, $log )
+    public function run( $commandLine, $verbose, $log )
     {
-        $output = '';
-        $result = 0;
+        $result = $this->executor->execute( $commandLine );
 
-        exec( $commndLine, $output, $result );
+        $outputs = $this->executor->getOutput();
+        $errorOutputs = $this->executor->getErrorOutput();
 
-        if ( $result != 0 )
+        $this->output = array( );
+
+        foreach( $outputs as $output )
         {
-            $this->output = $output;
+            if( $log ) \Log::info( $output );
 
-            return $result;
+            // Todo : put format/colorize code for git here.
+            $this->output[] = $output;
         }
 
-        // Now do specially nothing.
-        if( $log )
-        {
-            foreach( $output as $line )
-            {
-                \Log::info( $line );
-            }
-        }
+        $this->outputErrors( $errorOutputs, $log );
 
-        $this->output = $output;
-
-        return 0;
-    }
-
-    public function getOutput()
-    {
-        return $this->output;
+        return $result;
     }
 
 }
