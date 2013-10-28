@@ -66,7 +66,7 @@ class RsyncDeployer extends BaseDeployer implements DeployerInterface
             }
             else
             {
-                $fileCnt++;
+                if( $line != '' ) $fileCnt++;
 
                 if( $verbose ) $this->output[] = $line;
             }
