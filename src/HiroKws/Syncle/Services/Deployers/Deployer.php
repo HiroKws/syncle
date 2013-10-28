@@ -14,7 +14,7 @@ class Deployer
 
         $commandArray = is_array( $commands ) ? $commands : ( array ) $commands;
 
-        foreach( $commandArray as $command )
+        foreach( $commandArray as $command ) 
         {
             $replacedTo = str_replace( ':to', $basePath, $command );
             $replacedMessage = str_replace( ':message', $message, $replacedTo );

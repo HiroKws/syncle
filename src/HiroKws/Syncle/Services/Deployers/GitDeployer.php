@@ -4,7 +4,7 @@ namespace Syncle\Services\Deployers;
 
 class GitDeployer extends BaseDeployer implements DeployerInterface
 {
-    protected $output;
+    protected $output; 
 
     public function run( $commandLine, $verbose, $log )
     {

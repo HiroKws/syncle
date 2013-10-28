@@ -14,10 +14,12 @@ class RsyncDeployer extends BaseDeployer implements DeployerInterface
         $errorOutputs = $this->executor->getErrorOutput();
 
         $this->output = array( );
-        $fileCnt = -1; // One empty line will be displayed in Linux rsync command.
+        $fileCnt = 0;
 
-        foreach( $outputs as $line )
+        foreach( $outputs as $output )
         {
+            $line = trim( $output );
+
             // Put in log.
             if( $log ) \Log::info( $line );
 
@@ -36,9 +38,9 @@ class RsyncDeployer extends BaseDeployer implements DeployerInterface
                                                 array( 'file' => trim( $parts[1] ) ) );
             }
             // For Linux
-            elseif( $verbose && $line == 'sending incremental file list' )
+            elseif( starts_with( $line, 'sending incremental file list' ) )
             {
-                $this->output[] = \Lang::trans( 'syncle::SyncleCommand.LinuxSentList' );
+                if( $verbose ) $this->output[] = \Lang::trans( 'syncle::SyncleCommand.LinuxSentList' );
             }
             // For Linux
             elseif( starts_with( $line, 'sent ' ) )
@@ -66,7 +68,7 @@ class RsyncDeployer extends BaseDeployer implements DeployerInterface
             }
             else
             {
-                if( $line != '' ) $fileCnt++;
+                if( !empty( $line ) ) $fileCnt++;
 
                 if( $verbose ) $this->output[] = $line;
             }
