@@ -3,7 +3,10 @@
 namespace Syncle\Services\Executors;
 
 /**
- * Execute shell command by proc_open to get stderr.
+ * Execute shell command by proc_open,
+ *
+ * This is good sample to handle standard error
+ * from within PHP script.
  */
 class CommandExecutor
 {
@@ -30,18 +33,21 @@ class CommandExecutor
             while( !feof( $pipes[1] ) ) $this->output[] = fgets( $pipes[1] );
             fclose( $pipes[1] );
 
+            // Delete last 'false' item.
             array_pop( $this->output );
 
             // Get stderr.
             while( !feof( $pipes[2] ) ) $this->errorOutput[] = fgets( $pipes[2] );
             fclose( $pipes[2] );
 
+            // Delete last 'false' item.
             array_pop( $this->errorOutput );
 
             $result = proc_close( $process );
         }
         else
         {
+            // todo : Need internationalize.
             $this->errorOutput[] = array( 'Faild to Execute : '.$command );
             return 1;
         }
@@ -49,11 +55,21 @@ class CommandExecutor
         return $result;
     }
 
+    /**
+     * Get output strings.
+     *
+     * @return array An array of output strings.
+     */
     public function getOutput()
     {
         return $this->output;
     }
 
+    /**
+     * Get error output strings.
+     *
+     * @return array An array of error output strings.
+     */
     public function getErrorOutput()
     {
         return $this->errorOutput;

@@ -6,6 +6,10 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Handle exception and internationalize messages
+ * for Laravel & Symfony Command class.
+ */
 class BaseCommand extends Command
 {
 
@@ -46,7 +50,7 @@ class BaseCommand extends Command
             {
                 $this->error( $e->getMessage() );
             }
-            $result = 1; // As error status code
+            $result = 1;
         }
 
         return $result;

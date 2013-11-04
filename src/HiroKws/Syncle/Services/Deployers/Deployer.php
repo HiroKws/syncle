@@ -2,10 +2,29 @@
 
 namespace Syncle\Services\Deployers;
 
+/**
+ * Commands Deployer.
+ *
+ * Execute a command in the passed array.
+ */
 class Deployer
 {
+    /**
+     * Output message.
+     *
+     * @var array
+     */
     private $output = array( );
 
+    /**
+     * Execute commands and format & colorize.
+     *
+     * @param mix $commands A command(string) or some commands(array)
+     * @param boolean $verbose Verbose mode flag.
+     * @param boolean $log Log output flag.
+     * @param string $message Commit message.
+     * @return int Execution code.
+     */
     public function deploy( $commands, $verbose, $log, $message )
     {
         // Get project root. 'base_path' don't work in a command.
@@ -14,7 +33,7 @@ class Deployer
 
         $commandArray = is_array( $commands ) ? $commands : ( array ) $commands;
 
-        foreach( $commandArray as $command ) 
+        foreach( $commandArray as $command )
         {
             $replacedTo = str_replace( ':to', $basePath, $command );
             $replacedMessage = str_replace( ':message', $message, $replacedTo );
@@ -55,6 +74,11 @@ class Deployer
         return 0;
     }
 
+    /**
+     * Get output messages' array.
+     *
+     * @return array Output messages.
+     */
     public function getOutput()
     {
         return $this->output;

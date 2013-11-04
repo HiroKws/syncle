@@ -2,10 +2,24 @@
 
 namespace Syncle\Services\Deployers;
 
+/**
+ * A deployer class for rsync command.
+ *
+ * This came from Larave 4 Cookbook. The code in this book, is maybe for Mac,
+ * not for Linux rsync command. So added to handle output from Linux version rsync.
+ */
 class RsyncDeployer extends BaseDeployer implements DeployerInterface
 {
     protected $output;
 
+    /**
+     * Execute rsync command with formatting & colorizing.
+     *
+     * @param string $commandLine A Command to execute.
+     * @param boolean $verbose Verbose mose flag.
+     * @param boolean $log Output log flag.
+     * @return integer Execution code.
+     */
     public function run( $commandLine, $verbose, $log )
     {
         $result = $this->executor->execute( $commandLine );
@@ -23,6 +37,7 @@ class RsyncDeployer extends BaseDeployer implements DeployerInterface
             // Put in log.
             if( $log ) \Log::info( $line );
 
+            // Format & colorize output.
             // Maybe for Mac
             if( starts_with( $line, "Number of files transferred" ) )
             {
@@ -66,6 +81,7 @@ class RsyncDeployer extends BaseDeployer implements DeployerInterface
                 $this->output[] = \Lang::trans( 'syncle::SyncleCommand.LinuxFileTransferred',
                                                 array( 'file' => $fileCnt ) );
             }
+            // ...otherwise, maybe transfered file path.
             else
             {
                 if( !empty( $line ) ) $fileCnt++;

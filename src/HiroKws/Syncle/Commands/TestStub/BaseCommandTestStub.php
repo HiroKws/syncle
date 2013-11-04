@@ -6,6 +6,9 @@ use Syncle\Commands\BaseCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
+/**
+ * Test stub for BaseCommand.php
+ */
 class BaseCommandTestStub extends BaseCommand
 {
     /**

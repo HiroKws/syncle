@@ -5,6 +5,9 @@ namespace Syncle;
 use Illuminate\Support\ServiceProvider;
 use Syncle\Commands\SyncleCommand;
 
+/**
+ * A service provider for syncle deploy command execute system.
+ */
 class SyncleServiceProvider extends ServiceProvider
 {
     /**
@@ -12,20 +15,19 @@ class SyncleServiceProvider extends ServiceProvider
      *
      * @var bool
      */
-    protected $defer = false; // Must turn to true later!!!!
+    protected $defer = true;
 
     /**
      * Register the service provider.
      *
      * @return void
      */
-
     public function register()
     {
         $this->app['syncle.synclecommand'] = $this->app->share( function($app)
-        {
-            return new SyncleCommand;
-        }
+            {
+                return new SyncleCommand;
+            }
         );
     }
 

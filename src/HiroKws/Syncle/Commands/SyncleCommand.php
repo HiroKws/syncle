@@ -4,17 +4,24 @@ namespace Syncle\Commands;
 
 use Symfony\Component\Console\Input\InputOption;
 
+/**
+ * Simple deploy Artisan command.
+ *
+ * You can change command by config file setting.
+ */
 class SyncleCommand extends BaseCommand
 {
     /**
-     * The console command name.
+     * The dummy console command name.
+     * This will be replaced by config setting.
      *
      * @var string
      */
     protected $name = 'syncle';
 
     /**
-     * The console command description.
+     * The dummy console command description.
+     * This will be replaced by language file setting.
      *
      * @var string
      */
@@ -22,6 +29,9 @@ class SyncleCommand extends BaseCommand
 
     /**
      * Execute the console command.
+     *
+     * Return value will be execute code of this command.
+     * So don't return ture/false. It must be integer.
      *
      * @return integer Return Code. 0: Terminated successfully.
      */
@@ -34,6 +44,7 @@ class SyncleCommand extends BaseCommand
         $validator = \App::make( 'Syncle\Services\Validators\SyncleCommandValidator' );
         $message = $validator->validate( $args );
 
+        // The validator return only error message.
         if( $message != '' )
         {
             $this->error( $message );
@@ -42,9 +53,10 @@ class SyncleCommand extends BaseCommand
         }
 
         // Get an execute command line or command array.
+        // When no specified --by, default valude is 'default'. See  getOptions() method.
         $commandItems = \Config::get( 'syncle::DeployMethod.'.$args['by'] );
 
-        // Get default git commit message.
+        // Get default commit message.
         $commitMessage = $args['message'] == '' ? \Config::get( 'syncle::DefaultGitMessage' ) : $args['message'];
 
         // Deploy this project.

@@ -2,10 +2,21 @@
 
 namespace Syncle\Services\Deployers;
 
+/**
+ * A deployer class for Git command.
+ */
 class GitDeployer extends BaseDeployer implements DeployerInterface
 {
-    protected $output; 
+    protected $output;
 
+    /**
+     * Execute Git command with formatting & colorizing.
+     *
+     * @param string $commandLine A Command to execute.
+     * @param boolean $verbose Verbose mose flag.
+     * @param boolean $log Output log flag.
+     * @return integer Execution code.
+     */
     public function run( $commandLine, $verbose, $log )
     {
         $result = $this->executor->execute( $commandLine );
