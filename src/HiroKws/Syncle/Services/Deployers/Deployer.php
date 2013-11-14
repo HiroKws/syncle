@@ -29,14 +29,18 @@ class Deployer
     {
         // Get project root. 'base_path' don't work in a command.
         // 8th upper directory is project root.
-        $basePath = realpath( __DIR__.'/../../../../../../../..' ).'/';
+        $basePath = realpath( __DIR__.'/../../../../../../../..' );
+
+        $projectBasePath = realpath( __DIR__.'/../../../../..' );
 
         $commandArray = is_array( $commands ) ? $commands : ( array ) $commands;
 
         foreach( $commandArray as $command )
         {
-            $replacedTo = str_replace( ':to', $basePath, $command );
-            $replacedMessage = str_replace( ':message', $message, $replacedTo );
+            $replacedToBase = str_replace( ':root', $basePath, $command );
+            $replacedToProject = str_replace( ':projectRoot', $projectBasePath,
+                                              $replacedToBase );
+            $replacedMessage = str_replace( ':message', $message, $replacedToProject );
             $commandLine = escapeshellcmd( $replacedMessage );
 
             // Get only execute command.

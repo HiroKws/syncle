@@ -9,11 +9,11 @@ This is beta version, not tested well yet.
 php artisan syncle
 ~~~~
 
-Then deploy project by a command on config setting .
+Then deploy the project that installed this package by commands on a config setting .
 
-Also you can change command name by set favoret name on config file.
+You can also change command name by setting favoret name on config file.
 
-( But... in honesty, the best way is that just put same named shell script on each project root. More simple and easy to maintain... :D Main purpose is to lean how to make command and shell script handling, error output and so on. If you use this Artisan command, you can see colorized message on some output. This is a benefit. :D )
+(But...in honesty...the best way is that just put a named shell script on each project root, and execute when deploy the project. This is simpler and easiest to maintain... :D This package's main purpose is to lean how to make command and shell script handling, error output and so on. If you use this Artisan command, you can see colorized message on some output. This is a beautiful benefit. :D )
 
 #### Install
 
@@ -35,7 +35,7 @@ Then, add service provider into app/config/app.php.
 'Syncle\SyncleServiceProvider',
 ~~~
 
-Next, publish config file to your app/config folder.
+Next, publish config file into your app/config folder.
 
 ~~~~
 php artisan config:publish hirokws/syncle
@@ -44,11 +44,12 @@ php artisan config:publish hirokws/syncle
 #### Set Up
 
 Please open app/config/packages/hirokws/syncle/config.php.
+
 And change setting as you like.
 
 * CommandName : Command name to deploy. Default "syncle".
-* MessageLang : Display language. Only 'en' and 'ja' are available.
-* DeployMethod.default : rsync command to deploy. This default command will be used when no --by option to specify deploy method. In the command, ':to' will be replaced to project root path with ends '/'. Anyway, you must set rsync command propery.
+* MessageLang : Display language. Only 'en' and 'ja' are available now.
+* DeployMethod.default : rsync command to deploy. This default command will be used when no --by option to specify deploy method. In the command, ':root' will be replaced to project root path without ends '/'. As same as, ':projectRoot' will be replaced to project root. This is for a project on workbench direcotry. Anyway, you must set rsync command propery.
 * DeployMethos.git : An example of git commands. To use this command setting, run command with '--by git'. You can put any item names to deploy methods. Just it will be used to identify. ':message' will be replaced to message specified by '--message' option.
 * DefaultGitMessage : Dafault string that will be replaced to ':message'.
 
