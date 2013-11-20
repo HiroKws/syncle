@@ -1,9 +1,11 @@
 Syncle
 ======
 
-Laravel 4 Arisan deploy command by using execute a command line.
+Laravel 4 Arisan deploy command by using execute a command line tools (rsync, git, etc.).
 
 This is beta version, not tested well yet.
+
+#### How work
 
 ~~~~
 php artisan syncle
@@ -11,9 +13,9 @@ php artisan syncle
 
 Then deploy the project that installed this package by commands on a config setting .
 
-You can also change command name by setting favoret name on config file.
+You can change command name by setting favoret name to config file.
 
-(But...in honesty...the best way is that just put a named shell script on each project root, and execute when deploy the project. This is simpler and easiest to maintain... :D This package's main purpose is to lean how to make command and shell script handling, error output and so on. If you use this Artisan command, you can see colorized message on some output. This is a beautiful benefit. :D )
+(But...in honesty...the best way is that just put same named shell script on each project root, and execute it when deploy the project. This is simpler and easiest to maintain... :D This package's main purpose is tutorial how to make command and shell script handling, error output and so on. If you use this Artisan command, you can see colorized message on some output. This is a beautiful benefit. :D )
 
 #### Install
 
@@ -35,7 +37,7 @@ Then, add service provider into app/config/app.php.
 'Syncle\SyncleServiceProvider',
 ~~~
 
-Next, publish config file into your app/config folder.
+Next, publish config file into your app/config/packages folder.
 
 ~~~~
 php artisan config:publish hirokws/syncle
@@ -45,15 +47,27 @@ php artisan config:publish hirokws/syncle
 
 Please open app/config/packages/hirokws/syncle/config.php.
 
-And change setting as you like.
+And change setting as you like. Most deploy procedure may define in this config file.
 
 * CommandName : Command name to deploy. Default "syncle".
 * MessageLang : Display language. Only 'en' and 'ja' are available now.
-* DeployMethod.default : rsync command to deploy. This default command will be used when no --by option to specify deploy method. In the command, ':root' will be replaced to project root path without ends '/'. As same as, ':projectRoot' will be replaced to project root. This is for a project on workbench direcotry. Anyway, you must set rsync command propery.
+* DeployMethod.default : rsync command to deploy sample. This default command will be used when no --by option to specify deploy method. In the command, ':root' will be replaced to project root path without ends '/'. As same as, ':projectRoot' will be replaced to project root. This is for a project on workbench direcotry. Anyway, you must set rsync command propery.
 * DeployMethos.git : An example of git commands. To use this command setting, run command with '--by git'. You can put any item names to deploy methods. Just it will be used to identify. ':message' will be replaced to message specified by '--message' option.
 * DefaultGitMessage : Dafault string that will be replaced to ':message'.
 
-#### Run
+#### Command line interface
+
+~~~
+php artisan syncle [--by|-b deploy-method] [--log|-l] [--message|-m commit-message] [--verbose [1|2|3]|-[v|vv|vvv]]
+~~~
+* syncle : Command name, this will be change as you like by config setting.
+* --by : Deploy method, default is 'default'.
+* --log : Log output.
+* -message : Commit message, defaule string defined in config file.
+* --verbose : Verbose mode, all level (1, 2, 3) is same, no difference output.
+
+
+#### Execute samples
 
 **Deploy by 'default' setting :**
 
@@ -68,13 +82,13 @@ php artisan syncle --by git --message "Initial Commit"
 php artisan syncle -b git -m "Initial Commit"
 ~~~~
 
-Of course, if you project will deployed by git mainly, so set it as 'default'. Then command become shorter.
+Of course, if you use git to deploy your project mainly, then set it as 'default'. If do so, execute command become shorter, because no needed to specify deploy method by '--by'.
 
-If Ommited --message, DefaultGitMessage item on config file will be used. (If there is ':message' in DeployMethos.git command(s).
+If Ommited --message, DefaultGitMessage item on config file will be used. (If there is ':message' in DeployMethos.git command(s).)
 
 **Show transferred files list :**
 
-On Linux, rsync display transfering file names, and inhibited normal mode. If you want to see all tranferred files, use verbose mode.
+On Linux (maybe Mac also), rsync display transfering file names, and inhibited output them in normal mode. If you want to see all tranferred files, use verbose mode.
 
 ~~~~
 php artisan syncle -v

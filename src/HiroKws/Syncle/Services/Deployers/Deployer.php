@@ -2,6 +2,8 @@
 
 namespace Syncle\Services\Deployers;
 
+use Syncle\Helpers as H;
+
 /**
  * Commands Deployer.
  *
@@ -14,7 +16,7 @@ class Deployer
      *
      * @var array
      */
-    private $output = array( );
+    private $output = array();
 
     /**
      * Execute commands and format & colorize.
@@ -27,21 +29,42 @@ class Deployer
      */
     public function deploy( $commands, $verbose, $log, $message )
     {
-        // Get project root. 'base_path' don't work in a command.
-        // 8th upper directory is project root.
-        $basePath = realpath( __DIR__.'/../../../../../../../..' );
-
+        // Get project base root for develop package on workbench.
         $projectBasePath = realpath( __DIR__.'/../../../../..' );
+
+        // Get array of exclude packages.
+//        \App::make('Syncle\Services\')
+//        $excludePackages
 
         $commandArray = is_array( $commands ) ? $commands : ( array ) $commands;
 
         foreach( $commandArray as $command )
         {
-            $replacedToBase = str_replace( ':root', $basePath, $command );
+            // Get require-dev section from composer.json
+            $composerRepo = \App::make( 'Syncle\Repositories\ComposerJsonRepository' );
+            $requireDevs = $composerRepo->get();
+
+            $excludePackages = "";
+
+            foreach( $requireDevs as $package => $version )
+            {
+                $excludePackages .= "--exclude=\"vendor/{$package}\" ";
+            }
+
+            // Replace placeholders.
+            $helper = \App::make( 'Syncle\Helpers' );
+            $replacedToBase = str_replace( ':root', $helper->base_path(), $command );
             $replacedToProject = str_replace( ':projectRoot', $projectBasePath,
                                               $replacedToBase );
             $replacedMessage = str_replace( ':message', $message, $replacedToProject );
-            $commandLine = escapeshellcmd( $replacedMessage );
+            $commandLine = str_replace( ':excludeRequireDev', $excludePackages,
+                                        $replacedMessage );
+
+            if( $verbose )
+            {
+                $this->output = array_merge( $this->output,
+                                             array( "<comment>{$commandLine}</comment>" ) );
+            }
 
             // Get only execute command.
             $command = head( explode( ' ', $commandLine ) );

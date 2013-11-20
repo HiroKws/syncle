@@ -39,8 +39,9 @@ class SyncleCommand extends BaseCommand
     {
         $args = array_merge( $this->option(), $this->argument() );
 
-        // I don't wont to make extra instance by cascading dependency injextion
-        // on constructor for commands.
+        // I don't want to make extra instance by cascading dependency injection
+        // on constructor for commands from service provider.
+        // So I don't use constructor injection on this command class.
         $validator = \App::make( 'Syncle\Services\Validators\SyncleCommandValidator' );
         $message = $validator->validate( $args );
 
