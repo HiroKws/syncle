@@ -125,6 +125,10 @@ Have you read this book? If not, read it. You may also get some ideas to improve
 
 You can read those tutorials on Midium, but this is cheeper. I suggest that you get a copy.
 
+### Note
+
+To colorize output, please use --ansi option with artisan commands. I set an alias like `alias artisan='artisan --ansi'` on .bashrc.
+
 ### License
 
 The whole under LIT license. ( My bad English also. :D ) ( Pretty bugs also. :D :D )

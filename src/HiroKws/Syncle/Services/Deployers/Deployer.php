@@ -29,27 +29,25 @@ class Deployer
      */
     public function deploy( $commands, $verbose, $log, $message )
     {
+        $commandArray = is_array( $commands ) ? $commands : ( array ) $commands;
+
         // Get project base root for develop package on workbench.
         $projectBasePath = realpath( __DIR__.'/../../../../..' );
 
-        // Get array of exclude packages.
-//        \App::make('Syncle\Services\')
-//        $excludePackages
+        // Get require-dev section from composer.json
+        $composerRepo = \App::make( 'Syncle\Repositories\ComposerJsonRepository' );
+        $requireDevs = $composerRepo->get();
 
-        $commandArray = is_array( $commands ) ? $commands : ( array ) $commands;
+        // Generate exclude options for require-dev packages.
+        $excludePackages = "";
+
+        foreach( $requireDevs as $package => $version )
+        {
+            $excludePackages .= "--exclude=\"vendor/{$package}\" ";
+        }
 
         foreach( $commandArray as $command )
         {
-            // Get require-dev section from composer.json
-            $composerRepo = \App::make( 'Syncle\Repositories\ComposerJsonRepository' );
-            $requireDevs = $composerRepo->get();
-
-            $excludePackages = "";
-
-            foreach( $requireDevs as $package => $version )
-            {
-                $excludePackages .= "--exclude=\"vendor/{$package}\" ";
-            }
 
             // Replace placeholders.
             $helper = \App::make( 'Syncle\Helpers' );
@@ -63,7 +61,7 @@ class Deployer
             if( $verbose )
             {
                 $this->output = array_merge( $this->output,
-                                             array( "<comment>{$commandLine}</comment>" ) );
+                                             array( "<blue>=><blue><comment> {$commandLine}</comment>" ) );
             }
 
             // Get only execute command.
